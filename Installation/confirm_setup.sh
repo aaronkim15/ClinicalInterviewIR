@@ -1,7 +1,6 @@
 echo "===Windows Environment Setup + Check==="
 
 
-
 #1.1: Check Python Installation On PATH
 PYTHON=$(cmd.exe /c "where python" | tr -d '\r' | head -n 1)
 
@@ -27,7 +26,6 @@ else
     exit 1
 fi
 
-
 #2: Check Pip Installation + Version
 PIP_VERSION=$(cmd.exe /c "$PYTHON -m pip --version" 2>&1 | tr -d '\r')
 
@@ -47,16 +45,9 @@ fi
 
 
 #3: Install Required Packages
+PACKAGES_FILE="./packages.txt"
 
-#TODO: MORE TO MORE GENERIC LOCATION
-PACKAGES=(
-    "numpy==1.26.0"
-    "pandas==2.1.0"
-    "scikit-learn==1.3.0"
-    "matplotlib==3.8.0"
-)
-
-for pkg in "${PACKAGES[@]}"; do
+while IFS= read -r pkg || [ -n "$pkg" ]; do
     cmd.exe /c "$PYTHON -m pip install $pkg -qq"
     if [ $? -ne 0 ]; then
         echo "(ERROR): Failed To Install Package: $pkg"
@@ -64,4 +55,4 @@ for pkg in "${PACKAGES[@]}"; do
     else
         echo "--Installed Package: $pkg"
     fi
-done
+done < "$PACKAGES_FILE"
