@@ -12,6 +12,7 @@
 
 
 ### Current Progress:
+Installation (pip)    :  Created Script Template <br>
 Front End   (HTML, JS):  Started <br>
 Back End      (Python):  Created <br>
 Pyannote Code (Python):  Created <br>
