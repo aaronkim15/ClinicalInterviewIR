@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IR Front End</title>
+    <style>
+        /* Main Container */
+        .container {display: flex; height: 100vh; color:blue}
+
+        /* Function Selection Sidebar */
+        .sidebar {width: 200px; padding: 10px; background: #2c3d40; color:bisque}
+        .sidebar ul {list-style-type: none; padding: 10px;}
+        .sidebar li {padding: 10px; background: #34495d; cursor:pointer;}
+        .sidebar li:hover {background-color: #1abb9c;}
+
+        /* Function Content Area */
+        .content {flex: 1; padding:10px; color:blueviolet}
+        .panel{display:none;}
+        .panel.active{display:block;}
+
+        /* Button Format */
+        button { padding: 10px 10px; border: none; border-radius: 1px; background: #1abb9c; color: #f0f0f0; cursor: pointer; }
+        button:hover { background: #15a085; }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Function Selection Sidebar -->
+        <div class="sidebar">
+            <h2>Functions</h2>
+            <ul>
+                <li onclick="controller.showPanel('liveVideo')">1 Video</li>
+                <li onclick="controller.showPanel('fileVideo')">2 Video</li>
+            </ul>
+        </div>
+
+        <!-- Function Content Area --> 
+        <div class="content">
+
+            <!-- Live Video -->
+            <div id="liveVideo" class="panel">
+                <h3>Live Video</h3>
+                <button onclick="controller.startLiveVideo()"> Start Live Video</button>
+            </div>
+
+            <!-- File Video -->
+             <div id="fileVideo" class="panel">
+                <h3>File Video</h3>
+                <input type="file" id="fileInput", accept="audio/">
+                <button onclick="controller.uploadVideoFile()">Upload Video File</button>      
+             </div>
+        </div>
+    </div>
+<script src="app.js"></script>
+</body>
+</html>
