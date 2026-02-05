@@ -10,41 +10,25 @@ class Controller {
         if (panel) panel.classList.add('active');
     }
 
-    startLiveVideo() {
+    startLiveAudio() {
 
     }
 
-    async uploadVideoFile() {
-        
-        //Obtain Passed File
-        const file = this.fileInput.files[0]
-        
-        //Confirm File Valid
+    async uploadAudioFile() {
+        const file = this.fileInput.files[0];
         if (!file) {
-            alert("Please Select A Valid Audio File");
-            return;
-        } 
-        
-        //Prepare Data
-        const data = new FormData();
-        data.append("file", file);
-        
-        try {
-            //Send Request
-            const response = await fetch("WEBHOOPLOCATIONURL", {
-                method: "POST",
-                body: data
+            alert('No Audio File Selected')
+            return
+        } else {
+            const formData = new FormData();
+            formData.append('audio', file);
+
+            fetch("http://localhost:5678/webhook-test/upload-audio", {
+                    method: "POST",
+                    body: formData
             });
 
-            //Confirm Response Valid
-            if (!response.ok) {
-                alert("Recieved Unexpected Request Response: " + response.statusText);
-                return;
-            }
 
-        //Handle Failed Request
-        } catch(err) {
-            alert("Error Passing Request:"  + err.message);
         }
     }
 }
