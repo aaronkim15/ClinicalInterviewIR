@@ -11,7 +11,6 @@ class Controller {
     }
 
     startLiveAudio() {
-
     }
 
     async uploadAudioFile() {
@@ -20,19 +19,28 @@ class Controller {
             alert('No Audio File Selected')
             return
         } else {
+
+            /* Caching Audio File*/
             const formData = new FormData();
             formData.append('audio', file);
 
-            fetch("http://localhost:5678/webhook-test/upload-audio", {
+            /* Initiating N8N Flow */
+            try {
+                const response = await fetch("http://localhost:5678/webhook/upload-audio", {
                     method: "POST",
                     body: formData
-            });
+                });
+                const data = await response.text();
+                alert('After N8N Status:' + response.status)
+                alert('After N8N Literal' + data)
+                alert('After N8N Flow: ' + JSON.stringify(data))
 
-
+            } catch(error) {
+                alert('Error Uploading File: ' + error);
+            }   
         }
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     window.controller = new Controller();
