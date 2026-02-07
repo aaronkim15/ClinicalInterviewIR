@@ -1,3 +1,12 @@
+## Current Requirements
+#### - Python (havnt confirmed version)
+#### - Pip (havent confirmed version)
+#### - Docker (free tier)
+
+### Step 1: Setup Docker
+####
+
+
 docker build -t n8n_image:latest .
 docker compose up -d
 
