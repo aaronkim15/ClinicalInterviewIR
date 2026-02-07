@@ -15,6 +15,7 @@ class Controller {
 
     async uploadAudioFile() {
         const file = this.fileInput.files[0];
+        alert('Selected File: ' + (file ? file.name : 'None'));
         if (!file) {
             alert('No Audio File Selected')
             return

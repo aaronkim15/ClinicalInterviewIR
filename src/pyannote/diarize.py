@@ -13,3 +13,8 @@ app = FastAPI(title="Pyannote Diarization")
 @app.get("/status")
 async def status_check():
     return {"status": "ok", "message": "FastAPI Endpoint Reached"}
+
+
+@app.post("/diarize")
+async def diarize(audio: UploadFile = File(...)):
+    return {"status": "ok", "message": "Diarization Endpoint Reached"}
