@@ -1,1 +1,2 @@
-/src/pyannote/pyannote-env/
+/src/pyannote/script_env/
+/src/pyannote/__pycache__/

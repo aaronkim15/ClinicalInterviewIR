@@ -31,9 +31,7 @@ class Controller {
                     body: formData
                 });
                 const data = await response.text();
-                alert('After N8N Status:' + response.status)
-                alert('After N8N Literal' + data)
-                alert('After N8N Flow: ' + JSON.stringify(data))
+                alert('N8N Output: ' + JSON.stringify(data))
 
             } catch(error) {
                 alert('Error Uploading File: ' + error);
