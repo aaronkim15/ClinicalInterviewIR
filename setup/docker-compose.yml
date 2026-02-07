@@ -7,13 +7,5 @@ services:
       - n8n_data:/home/node/.n8n
     restart: unless-stopped
 
-  python:
-    image: python:3.11-slim
-    container_name: n8n_python
-    volumes:
-      - ./scripts:/app
-    command: sleep infinity
-    restart: unless-stopped
-
 volumes:
   n8n_data:
