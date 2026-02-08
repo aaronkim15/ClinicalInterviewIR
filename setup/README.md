@@ -13,7 +13,7 @@ docker compose up -d
 
 ## Step 2: Python Virtual Environment
 The Python code required for Pyannote (+possibly more later) is run through FastAPI using a virtual environment outside of Docker (to avoid bloating up our docker with imports). 
-Within command line, activate the src/pyannote folder, then create and activate the virtual environment. Please note that when hosted (last line), FastAPI calls are done through http://localhost:8000/<name>
+Within command line, activate the src/pyannote folder, then create and activate the virtual environment. Please note that when hosted (last line), FastAPI calls are done through http://localhost:8000/<name>   NOTE I HAVNT YET CONFIRMED WHICH PYANNOTE VERSIONS WORK
 
 ```bash
 python3 -m venv script_env
@@ -23,7 +23,8 @@ python3 -m venv script_env
 pip install fastapi uvicorn
 pip install python-multipart
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-pip install pyannote.audio ffmpeg-python
+pip install ffmpeg-python
+pip install pyannote.audio 
 
 uvicorn diarize:app --host 0.0.0.0 --port 8000 --reload
 ```
