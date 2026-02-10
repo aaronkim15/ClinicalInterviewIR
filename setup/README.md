@@ -2,6 +2,7 @@
 - Python (havnt confirmed version)
 - Pip (havent confirmed version)
 - Docker (free tier)
+- Hugging face token (free)
 
 ## Step 1: Setup N8N
 N8N is run through docker, I reccomend opening the application to confirm status. Then through command line, activate this folder, create and activate a docker image using the following. Please note that once activated (last line) you can access N8N using http://localhost:5678. (NOT COMPLETE: But please find the started n8n flow within the src/n8n folder, and within n8n import as file.
