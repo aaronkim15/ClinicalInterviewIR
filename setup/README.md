@@ -34,7 +34,7 @@ pip install pydub
 pip install groq
 
 
-uvicorn diarize:app --host 0.0.0.0 --port 8000 --reload
+uvicorn endpoints:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## Step 3: Run The Front End
