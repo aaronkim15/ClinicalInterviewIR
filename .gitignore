@@ -2,3 +2,5 @@
 /src/FastAPI/__pycache__/
 /tokens/*
 /tests/*
+!/tokens/.gitkeep
+!/tests/.gitkeep
