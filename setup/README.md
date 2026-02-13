@@ -16,7 +16,7 @@ docker compose up -d
 
 ## Step 2: Python Virtual Environment
 The Python code required for Pyannote / Whisper is run through FastAPI using a virtual environment outside of Docker (to avoid bloating up our docker with imports). 
-Within command line, activate the src/pyannote folder, then create and activate the virtual environment. Please note that when hosted (last line), FastAPI calls are done through http://localhost:8000/<name> (NOTE: Temporarily, ive put the whisper code in the same method as diarize, tobe seperated when we have a better idea of the output for LiveKit)
+Within command line, activate the src/FastAPI folder, then create and activate the virtual environment. Please note that when hosted (last line), FastAPI calls are done through http://localhost:8000/<name> 
 
 ```bash
 python3 -m venv script_env

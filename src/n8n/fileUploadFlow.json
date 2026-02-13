@@ -6,6 +6,7 @@
         "httpMethod": "POST",
         "path": "upload-audio",
         "responseMode": "lastNode",
+        "responseData": "allEntries",
         "options": {
           "binaryPropertyName": "audio"
         }
@@ -22,7 +23,19 @@
     },
     {
       "parameters": {
-        "url": "http://host.docker.internal:8000/status",
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/transcribe-original-audio",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "audio_file",
+              "inputDataFieldName": "audio0"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -32,7 +45,7 @@
         0
       ],
       "id": "4ab26eaf-eb18-432f-a26a-f027a5ced79c",
-      "name": "HTTP Request"
+      "name": "Diarize + Transcribe"
     }
   ],
   "pinData": {},
@@ -41,11 +54,16 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Diarize + Transcribe",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Diarize + Transcribe": {
+      "main": [
+        []
       ]
     }
   },
@@ -55,7 +73,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "4a3e9997-86be-4c9a-b9bc-5a2a3e6d8da5",
+  "versionId": "ea124605-2614-40d4-9a4f-71476e90eedf",
   "meta": {
     "instanceId": "b203614f2625fa3d7805e6e781576239469341967d7f7d1beb760163d84d4689"
   },

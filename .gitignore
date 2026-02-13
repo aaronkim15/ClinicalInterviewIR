@@ -1,3 +1,4 @@
-/src/pyannote/script_env/
-/src/pyannote/__pycache__/
-/tokens/
+/src/FastAPI/script_env/
+/src/FastAPI/__pycache__/
+/tokens/*
+/tests/*

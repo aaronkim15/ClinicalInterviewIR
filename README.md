@@ -2,9 +2,12 @@
 
 ## Hello Fellow Group Members, Im Looking Forward To Working With You All
 
-### Ive created this repo in an attempt to centralize the work for the project, and easier for us all.
+## Next Steps:
 
-#### The goal is that individual components are easily accessible and individual contributions are recorded (although lets hope thats not necessary). Please message me in the groupchat and I can get you any permission you want. 
+### If anyone else has time to get started, here are some easy next steps (after setting up the tools outlined in setup)
 
-#### A few notes, this is a public repo, so please dont add any private keys (feel free to add to gitignore as you see fit) or hardcode anything. Additionally, as for code design, (im not the best so i cant judge) but please try to keep it well documented, ideally also using the typing module for python code. If there are more extensive notes you want to add, ive added a folder dedicated to contributions. Happy to share individual components or divide work into pieces
-.....
+- Streaming Function In The Front End: Ive set up the skeleton front end, and a FastAPI transcription endpoint that inputs per participant audio files + metadata. What can be done next is setting up the Livekit audio batching to connect them.
+ 
+- Indexing: For the audio upload portion, Ive completed that workflow upto the transcription stage. The next step is a new FastAPI endpoint for indexing that takes the transcription as input. (or append to transcription??? idk, should sequential tasks all within FastAPI be seperate endpoints and n8n nodes???)
+
+- Listen To / Read Professors Additional Materials: I havnt yet had a chance to delve into the resource material the professor provided to us via email, however it covers mostly later sections in the project that would be valuable to know.
