@@ -9,6 +9,7 @@ from pathlib import Path
 import tempfile
 from pydub import AudioSegment
 import json
+from sentence_transformers import SentenceTransformer
 
 app = FastAPI(title="Pyannote Diarization")
 
@@ -24,6 +25,10 @@ with open(GROQ_TOKEN_PATH, "r") as f:
 huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=huggingface_token)
 
 groq_client = Groq(api_key=groq_token)
+
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+
 
 
 
@@ -62,6 +67,18 @@ def get_transcription(audio_path: str) -> Dict[str, Any]:
         except Exception as e:
             raise RuntimeError(f"Groq Transcription Error: {str(e)}")
     return result
+
+def get_embeddings(texts: List[str]) -> List[List[float]]:
+    try:
+        embeddings = embedding_model.encode(
+            texts,
+            convert_to_numpy=True,
+            normalize_embeddings=True                                    
+        )
+        return embeddings.tolist()
+    except Exception as e:
+        raise RuntimeError(f"Embedding Generation Error: {str(e)}")
+
 
 
 
@@ -113,8 +130,6 @@ def transcribe_separated_audio(audio_files: List[UploadFile] = File(...), metada
     except Exception as e:
         raise RuntimeError(f"Error In Transcribe Separated Audio: {str(e)}")
     
-
-
 @app.post("/transcribe-original-audio")
 def transcribe_original_audio(audio_file: UploadFile = File(...)):
     try:    
@@ -146,3 +161,22 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)):
         return ret
     except Exception as e:
         return {"status": "error", "text": f"Error In Transcribe Original Audio: {str(e)}"}
+
+@app.post("/index-audio")
+def index_audio(metadata: Any):
+
+    try: 
+        #NOTE: Since audio comes from conversation, and we already divide by noticable gaps (live) or change or speaker (pyannote)
+        # going to assume those form sufficient chunks for indexing.
+
+        audio_transcriptions = metadata #json.loads(metadata)
+        texts = [segment["text"] for segment in audio_transcriptions]
+        embeddings = get_embeddings(texts)
+
+        for embedding, transcription in zip(embeddings, audio_transcriptions):
+            transcription["embedding"] = embedding
+
+        return audio_transcriptions
+    except Exception as e:
+        return {"status": "error", "text": f"Error In Index Audio: {str(e)}"}
+
