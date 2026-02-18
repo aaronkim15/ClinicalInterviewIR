@@ -17,7 +17,7 @@
         0,
         0
       ],
-      "id": "a3901ec3-3efb-42f0-9252-ee7c85341f25",
+      "id": "1cebbd27-17c8-42a1-b6de-83bf43cf572d",
       "name": "Webhook",
       "webhookId": "fad15dbb-5a4f-46f8-9d17-fe4cbcfa2a62"
     },
@@ -44,8 +44,32 @@
         208,
         0
       ],
-      "id": "4ab26eaf-eb18-432f-a26a-f027a5ced79c",
+      "id": "7366b0ad-89fd-4a9b-98e1-9f57ca6b24a5",
       "name": "Diarize + Transcribe"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/index-audio",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "metadata",
+              "value": "={{JSON.stringify($json)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d4da2428-b517-46a2-b7c6-5b43fc8a13df",
+      "name": "HTTP Request"
     }
   ],
   "pinData": {},
@@ -63,7 +87,13 @@
     },
     "Diarize + Transcribe": {
       "main": [
-        []
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -73,10 +103,10 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "ea124605-2614-40d4-9a4f-71476e90eedf",
+  "versionId": "c9b87d35-1830-48c5-bda1-d9a4322caaec",
   "meta": {
-    "instanceId": "b203614f2625fa3d7805e6e781576239469341967d7f7d1beb760163d84d4689"
+    "instanceId": "d1d67826bb49cfa9f5ff49f52c97a72ff05970f49c4dc25299f7cb6038d140fa"
   },
-  "id": "ZA4vtIFiPPfSMlH-z9dRi",
+  "id": "exD2GNbUiOEmn7Go",
   "tags": []
 }

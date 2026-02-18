@@ -18,27 +18,13 @@ GROQ_TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "Groq_token.t
 
 with open(HUGGINGFACE_TOKEN_PATH, "r") as f:
     huggingface_token = f.read().strip()
+    huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=huggingface_token)
 
 with open(GROQ_TOKEN_PATH, "r") as f:
     groq_token = f.read().strip()   
-
-huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=huggingface_token)
-
-groq_client = Groq(api_key=groq_token)
+    groq_client = Groq(api_key=groq_token)
 
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-
-
-
-
-
-@app.get("/status")
-async def status_check():
-    return {"status": "ok", "message": "FastAPI Endpoint Reached"} 
-
-
-
-
 
 
 def get_diarization(audio_path: str) -> Dict[str, Any]:
@@ -53,7 +39,6 @@ def get_diarization(audio_path: str) -> Dict[str, Any]:
         return diarization
     except Exception as e:
         raise RuntimeError(f"Pyannote Diarization Error: {str(e)}")
-
 
 def get_transcription(audio_path: str) -> Dict[str, Any]:
     with open(audio_path, "rb") as f:
@@ -79,9 +64,61 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
     except Exception as e:
         raise RuntimeError(f"Embedding Generation Error: {str(e)}")
 
+#IN PRODUCTION
+
+@app.get("/status")
+async def status_check():
+    return {"status": "ok", "message": "FastAPI Endpoint Reached"} 
+
+@app.post("/transcribe-original-audio")
+def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[str, Any]]:
+    try:    
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+            tmp.write(audio_file.file.read())
+            audio_path = str(Path(tmp.name))
+
+        ret = []
+        audio_diarization = get_diarization(audio_path=audio_path).speaker_diarization
+        audio = AudioSegment.from_file(audio_path)
+
+        for segment, speaker in audio_diarization:
+
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_segment:
+                audio[int(segment.start*1000):int(segment.end*1000)].export(tmp_segment.name, format="wav")
+                segment_path = str(Path(tmp_segment.name))
+
+            #NOTE: Already Diarized, So Assume Block Text A Contiguous Paragraph.
+            transcription = get_transcription(audio_path=segment_path)
+
+            ret.append({
+                "speaker": speaker,
+                "start": segment.start,
+                "end": segment.end,
+                "text": transcription.text
+            })
+
+        return [{"transcription": ret}]
+    except Exception as e:
+        return {"status": "error", "text": f"Error In Transcribe Original Audio: {str(e)}"}
+
+@app.post("/index-audio")
+def index_audio(metadata: Any) -> List[Dict[str, Any]]:
+    try: 
+        #TODO: Break Into Smaller Chunks By Word Count???
+        audio_transcriptions = json.loads(metadata)["transcription"]
+
+        texts = [segment["text"] for segment in audio_transcriptions]
+        embeddings = get_embeddings(texts)
+
+        for embedding, transcription in zip(embeddings, audio_transcriptions):
+            transcription["embedding"] = embedding
+
+        return [{"transcription": audio_transcriptions}]    
+    except Exception as e:
+        return {"status": "error", "text": f"Error In Index Audio: {str(e)} {str(metadata)}"}
 
 
-
+# NOT IN USE
 
 @app.post("/diarize-original-audio")
 async def diarize_original_audio(audio: UploadFile = File(...)):
@@ -100,8 +137,7 @@ async def diarize_original_audio(audio: UploadFile = File(...)):
                 "end": round(turn.end, 2)
             })
 
-        return ret
-    
+        return [{"diarization": ret}]
     except Exception as e:
         raise RuntimeError(f"Error In Diarized Original Audio: {str(e)}")
 
@@ -130,53 +166,3 @@ def transcribe_separated_audio(audio_files: List[UploadFile] = File(...), metada
     except Exception as e:
         raise RuntimeError(f"Error In Transcribe Separated Audio: {str(e)}")
     
-@app.post("/transcribe-original-audio")
-def transcribe_original_audio(audio_file: UploadFile = File(...)):
-    try:    
-        
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-            tmp.write(audio_file.file.read())
-            audio_path = str(Path(tmp.name))
-
-        ret = []
-        audio_diarization = get_diarization(audio_path=audio_path).speaker_diarization
-        audio = AudioSegment.from_file(audio_path)
-
-        for segment, speaker in audio_diarization:
-
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_segment:
-                audio[int(segment.start*1000):int(segment.end*1000)].export(tmp_segment.name, format="wav")
-                segment_path = str(Path(tmp_segment.name))
-
-            #NOTE: ALready Diarized, So Assume Block Text Within Segment
-            transcription = get_transcription(audio_path=segment_path)
-
-            ret.append({
-                "speaker": speaker,
-                "start": segment.start,
-                "end": segment.end,
-                "text": transcription.text
-            })
-
-        return ret
-    except Exception as e:
-        return {"status": "error", "text": f"Error In Transcribe Original Audio: {str(e)}"}
-
-@app.post("/index-audio")
-def index_audio(metadata: Any):
-
-    try: 
-        #NOTE: Since audio comes from conversation, and we already divide by noticable gaps (live) or change or speaker (pyannote)
-        # going to assume those form sufficient chunks for indexing.
-
-        audio_transcriptions = metadata #json.loads(metadata)
-        texts = [segment["text"] for segment in audio_transcriptions]
-        embeddings = get_embeddings(texts)
-
-        for embedding, transcription in zip(embeddings, audio_transcriptions):
-            transcription["embedding"] = embedding
-
-        return audio_transcriptions
-    except Exception as e:
-        return {"status": "error", "text": f"Error In Index Audio: {str(e)}"}
-
