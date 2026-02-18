@@ -11,8 +11,10 @@ from pydub import AudioSegment
 import json
 from sentence_transformers import SentenceTransformer
 
+#FastAPI App Initialization
 app = FastAPI(title="Pyannote Diarization")
 
+#Token + Model Setup
 HUGGINGFACE_TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "HuggingFace_token.txt"
 GROQ_TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "Groq_token.txt"
 
@@ -26,21 +28,37 @@ with open(GROQ_TOKEN_PATH, "r") as f:
 
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-
 def get_diarization(audio_path: str) -> Dict[str, Any]:
+    """
+    Performs Speaker Diarization On Given Audio Using Pyannote Hugging Face Pipeline
+    
+    Args:
+        audio_path (str): Path To Audio File To Diarize
+    
+    Returns:
+        Dict[str, Any]: Dictionary Representation Of Diarization: Speaker Segments, Timestamps
+    """
     try:
         data, sample_rate = sf.read(audio_path, dtype='float32')
         if data.ndim == 1:
             waveform = torch.tensor(data).unsqueeze(0)
         else:
             waveform = torch.tensor(data).T
-
         diarization = huggingface_pipeline({"waveform": waveform, "sample_rate": sample_rate})
         return diarization
     except Exception as e:
         raise RuntimeError(f"Pyannote Diarization Error: {str(e)}")
 
 def get_transcription(audio_path: str) -> Dict[str, Any]:
+    """
+    Transcribes Given Audio File Using Groq Whisper API Client
+
+    Args:
+        audio_path (str): Path To Audio File To Transcribe
+
+    Returns:
+        Dict[str, Any]: Dictionary Representation Of Transcription: Text, Timestamps, Segments, etc
+    """
     with open(audio_path, "rb") as f:
         try:
             result = groq_client.audio.transcriptions.create(
@@ -54,6 +72,15 @@ def get_transcription(audio_path: str) -> Dict[str, Any]:
     return result
 
 def get_embeddings(texts: List[str]) -> List[List[float]]:
+    """
+    Generates Embeddings For Given List Of Strings Using A Sentence Transformer Model
+
+    Args:
+        texts (List[str]): List Of Text To Generate Embedding For
+
+    Returns:
+        List[List[float]]: List Of Embedding Vectors Corrasponding To Each Input String
+    """
     try:
         embeddings = embedding_model.encode(
             texts,
@@ -64,14 +91,36 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
     except Exception as e:
         raise RuntimeError(f"Embedding Generation Error: {str(e)}")
 
-#IN PRODUCTION
+
+#NOTE: IN PRODUCTION
 
 @app.get("/status")
-async def status_check():
+async def status_check() -> Dict[str, str]:
+    """
+    Simple Endpoint To Check If FastAPI Server Is Working Properly And Is Setup
+
+    Returns:
+        Dict[str, str]: Simple Status Message
+    """
     return {"status": "ok", "message": "FastAPI Endpoint Reached"} 
 
 @app.post("/transcribe-original-audio")
 def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[str, Any]]:
+    """
+    Generates Speaker Transcription (+Diarization) On A Given Original Audio File
+
+    Args:
+        audio_file (UploadFile): Binary Audio File To Transcribe And Diarize
+
+    Returns:
+        List[Dict[str, Any]]: List Of Transcripted Segments: Speaker, Timestamp, Text
+
+    Notes:
+        - It May Seem Strange To Combine Diarization + Transcription In This One Endpoint, However This Method Handles Just
+           Original Uploaded Audio FIles (No Livekit) And Thus Diarization And Transcription Are Always Completed Sequentally.
+           Joining Them Avoids Needing To Pass Then Save The Audio File Twice, As Well As Copying The Diarization Segments Through An Extra Endpoint        
+        - Currently Not Divided Transcription Into Smaller Segments Beyond Diarized Components, But Could Be Done In Future
+    """
     try:    
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
             tmp.write(audio_file.file.read())
@@ -87,7 +136,6 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[s
                 audio[int(segment.start*1000):int(segment.end*1000)].export(tmp_segment.name, format="wav")
                 segment_path = str(Path(tmp_segment.name))
 
-            #NOTE: Already Diarized, So Assume Block Text A Contiguous Paragraph.
             transcription = get_transcription(audio_path=segment_path)
 
             ret.append({
@@ -103,8 +151,20 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[s
 
 @app.post("/index-audio")
 def index_audio(metadata: Any) -> List[Dict[str, Any]]:
+    """
+    Generates Embeddings For Transcribed Audio Segments
+
+    Args:
+        metadata (Any): String Representation Of JSON Transcription Segments
+
+    Returns:
+        List[Dict[str, Any]]: The Inputed JSON Transcription Segments With Added Embedding Attribute For Each
+    
+    Notes:
+        - Hopefully this endpoint should work for both original and livekit audio flows
+        - Doesnt currently break transcriptions into smaller segments beyond the diarization, but could be split to specific word count
+    """
     try: 
-        #TODO: Break Into Smaller Chunks By Word Count???
         audio_transcriptions = json.loads(metadata)["transcription"]
 
         texts = [segment["text"] for segment in audio_transcriptions]
