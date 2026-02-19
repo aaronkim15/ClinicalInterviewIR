@@ -1,0 +1,225 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/transcribe-original-audio",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "audio_file",
+              "inputDataFieldName": "audio0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7366b0ad-89fd-4a9b-98e1-9f57ca6b24a5",
+      "name": "Diarize + Transcribe"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        128
+      ],
+      "id": "fb9a7f84-aaa1-43d9-8e7c-1bfef6591bea",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "upload-audio",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {
+          "binaryPropertyName": "audio"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "1cebbd27-17c8-42a1-b6de-83bf43cf572d",
+      "name": "Audio Upload Webhook",
+      "webhookId": "fad15dbb-5a4f-46f8-9d17-fe4cbcfa2a62"
+    },
+    {
+      "parameters": {
+        "path": "2b33e750-870d-4df6-bcb9-c432d8876c1a",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        192
+      ],
+      "id": "784bc8eb-4033-4bd0-98d7-89e995c33fc2",
+      "name": "Live Audio Chunk Webhook",
+      "webhookId": "2b33e750-870d-4df6-bcb9-c432d8876c1a"
+    },
+    {
+      "parameters": {
+        "tableId": "segment",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        912,
+        128
+      ],
+      "id": "85b08f66-c35a-4c98-9d80-ca15d898891e",
+      "name": "Upload Into Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "UlkFIs0aWNzUjBRG",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "TODO: LiveKit Stuff Here, Outputting Seperated Audio Tracks And Metadata. ",
+        "width": 160
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        176
+      ],
+      "id": "12a44c1f-3f16-4d8e-933c-e0aa12a27794",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/index-audio",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "metadata",
+              "value": "={{JSON.stringify($json)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        672,
+        128
+      ],
+      "id": "d4da2428-b517-46a2-b7c6-5b43fc8a13df",
+      "name": "Index + Embed"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/transcribe-seperated-audio",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        192
+      ],
+      "id": "6e93dd5c-d059-4c1b-8c10-18463abce576",
+      "name": "Transcribe + Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Diarize + Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Index + Embed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio Upload Webhook": {
+      "main": [
+        [
+          {
+            "node": "Diarize + Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Into Supabase": {
+      "main": [
+        []
+      ]
+    },
+    "Index + Embed": {
+      "main": [
+        [
+          {
+            "node": "Upload Into Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe + Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7f8410fc-079f-43b5-942c-8c7e4622f651",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1d67826bb49cfa9f5ff49f52c97a72ff05970f49c4dc25299f7cb6038d140fa"
+  },
+  "id": "exD2GNbUiOEmn7Go",
+  "tags": []
+}

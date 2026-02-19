@@ -173,7 +173,7 @@ def index_audio(metadata: Any) -> List[Dict[str, Any]]:
         for embedding, transcription in zip(embeddings, audio_transcriptions):
             transcription["embedding"] = embedding
 
-        return [{"transcription": audio_transcriptions}]    
+        return audio_transcriptions    
     except Exception as e:
         return {"status": "error", "text": f"Error In Index Audio: {str(e)} {str(metadata)}"}
 

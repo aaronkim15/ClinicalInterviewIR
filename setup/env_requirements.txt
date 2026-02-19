@@ -1,0 +1,9 @@
+python-multipart
+fastapi
+uvicorn
+torch
+torchaudio
+pyannote.audio
+soundfile
+pydub
+groq

@@ -1,3 +1,8 @@
-2026-01-13, Lucas, Repository Structure Generated
-2026-01-13, Lucas, Started Front End
-2026-02-04, Lucas, Docker/N8N Setup (excluding python requirements)
+DATE,       CO, AREA,        SUMMARY,                        CONTRIBUTOR
+2026-01-06, SETUP,        Github Repo, Created Folder Structure,       Lucas
+2026-01-13, STARTED,      Front End,   Started Front End App UI,       Lucas        
+2026-02-04, SETUP,        Docker,      Docker Configuation/Activation + Instructions        
+2026-02-04, SETUP,        N8N,         N8N Setup/Activation + Instruction                  
+2026-02-07, STARTED,      N8N Flow + FrontEnd, Created Webhook N8N Flow + Created File Upload Method Activating It Using HTTP Call
+2026-02-07, SETUP,        FastAPI,     FastAPI Configuration/Activation + Instructions
+2026-02-07, ADDED,        
