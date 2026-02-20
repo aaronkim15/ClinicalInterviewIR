@@ -7,3 +7,4 @@ pyannote.audio
 soundfile
 pydub
 groq
+sentence-transformers

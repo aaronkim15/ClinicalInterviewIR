@@ -1,38 +1,12 @@
 # Contribution Log
 
-As This Project Includes Many Different Pieces, Coordination Will Be Key. 
+As This Project Includes Many Different Pieces, Coordination Will Be Key. To Prevent Duplication Of Work, And Ensure Efficiency Its My Hope The Each Person Focuses On Seperate Sections/Tools. So We Have A Specialist For Each Part: Who Will Be Fully Responsible For Everything To Do With That Section. To Ensure Everyone Can Keep Track Of Exactly Where We Are In Each Component Of The Project, And Who To Go To For Specific Questions, Concerns, Or Ideas Ive Created A Log. To Ensure This Log Remains Functional, Ive So Far Tried To Adhere To The Following:
 
-To Prevent Duplication Of Work, And Ensure Efficiency Its My Hope The Each Person Focuses On Seperate Sections/Tools. So We Have A Specialist For Each Part: Who Will Be Fully Responsible For Everything To Do With That Section.
-
-Additionally, Lets Try To Keep Things Modular, Between Sections And Contributors
-
-So Please Everyone Feel Free To Look At The Project Outline, And Get Started On A Piece That Hasnt Been Started Yet. 
-
-CURRENT NEXT STEPS:
-
-- LIVEKIT:   
-    - Based On My Research Its Run Through Docker
-    - Will Need To Modify Docker Setup
-    - Chunks Connects To Seperated Transcription Endpoint In FastAPI 
-
-- FRONT END RETRIEVAL UI:
-    - Setting Up The User Interface For Retrieval
-    - Note 3 Seperate Modules, 3 Tabs??
-
-- RETRIEVAL MODULE 1-3:
-    - Starting The Retrieval Logic For Data In Supabase
-
-- EVALUATION CODE:
-    - Setting Up Evaluation Code To Evaluate Retrieval Quality
-
-- DEMO SCRIPTING DIALOGUE:
-    - Demo Will Require Audio Files And Live Script
-    - Work Could Start On Preparing Audio Files As Well As Live Script
-    - Utilize Interesting Nuance, Keep In Mind Future Metrics
-
-- ABOVE AND BEYOND
-    - Not Fully Sure What He Expects, But Any Cool Ideas You Want To Implement, Or
-        Extra Tools You Are Experienced With Would Be Amazing.
-
-- ANY LATER STEPS IN PIPELINE:
-    - Above Are Just The Connected Ones
+- Brevity: The Commit History Tracks Exact Technical Details Or Changes, Use This To Summarize High Level Progress
+- Scope: Each Row Represents Modification To A Specific Component, Or Pair If Bridging
+- Scale: Dont Flood The Log With Minor Changes, IE: Syntax, Documentation, Code Reorganization
+- Terminology: 
+    - SETUP:   The Configuration Of A Tool/Technology/Program
+    - STARTED: The Partial Creation Of A Component
+    - CREATED: The Creation Of A Complete Function Component
+    - UPDATED: Changes Made To A Component 

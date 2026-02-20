@@ -1,0 +1,27 @@
+from pathlib import Path
+import torch
+from pyannote.audio import Pipeline
+from typing import Dict, Any
+import soundfile as sf
+
+
+
+
+TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "HuggingFace_token.txt"
+
+with open(TOKEN_PATH, "r") as f:
+    token = f.read().strip()
+    huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=token)
+
+
+def get_diarization(audio_path: str) -> Dict[str, Any]:
+    try:
+        data, sample_rate = sf.read(audio_path, dtype='float32')
+        if data.ndim == 1:
+            waveform = torch.tensor(data).unsqueeze(0)
+        else:
+            waveform = torch.tensor(data).T
+        diarization = huggingface_pipeline({"waveform": waveform, "sample_rate": sample_rate})
+        return diarization
+    except Exception as e:
+        raise RuntimeError(f"Pyannote Diarization Error: {str(e)}")
