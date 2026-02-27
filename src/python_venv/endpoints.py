@@ -43,7 +43,18 @@ def index_text(metadata: str) -> List[Dict[str, Any]]:
 
         return audio_transcriptions    
     except Exception as e:
-        return [{"status": "error", "text": f"Error In Index Audio: {str(e)} {str(metadata)}"}]
+        return [{"status": "error", "text": f"Error In Index Audio: {str(e)}"}]
+
+
+@app.get("/retrieve-conversation") 
+def retrieve_conversation() -> List[Dict[str, Any]]:
+    try:
+        return [{"response": _transcription.get_retrieval(query="Hi Hows Your Day Going", system_prompt="Please Respond To The User Kindly")}]
+    except Exception as e:
+        return [{"status": "error", "text": f"Error In Retrieval: {str(e)}"}]
+
+
+
 
 
 

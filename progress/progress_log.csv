@@ -6,9 +6,9 @@ DATE,       WHO, TYPE,     AREA,                       SUMMARY
 2026-02-07, LD,  CREATED,  FrontEnd/N8N,               Created Audio File Upload Method Linking To N8N Flow Using HTTP      
 2026-02-07, LD,  SETUP,    Virtual Env,                Virtual Environment Configuation + Activation Instructions
 2026-02-07, LD,  SETUP,    FastAPI,                    FastAPI Configuation + Activation Instructions
-2026-02-07, LD,  CREATED,  Diarization/N8N,            Created Pyannote/Hugging Face Diarization Method And EndPoint
-2026-02-12, LD,  CREATED,  Transcription/N8N,          Created Whisper/Groq Transcription Method And 2 Endpoints: Live Audio Chunk and File Upload
+2026-02-07, LD,  CREATED,  Diarization/N8N,            Created Hugging Face:Pyannote Diarization Method And EndPoint
+2026-02-12, LD,  CREATED,  Transcription/N8N,          Created Groq:Whisper Transcription Method And 2 Endpoints: Live Audio Chunk (Not Yet In Use) and File Upload
 2026-02-17, LD,  CREATED,  Embedding/N8N,              Created Embedding Method And Endpoint 
 2026-02-19, LD,  SETUP,    Supabase,                   Supabase Setup + Table Configuration  
-
 2026-02-19, LD,  UPDATED,  Supabase/N8N,               Added Supabase INSERT Node To N8N Flow Moving Audio Data Into Permanent Table
+2026-02-26, LD,  CREATED,  Retrieval,                  Configured + Created Groq:Llama LMM Internal Retrieval Method

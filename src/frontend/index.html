@@ -31,8 +31,9 @@
         <div class="sidebar">
             <h2>Functions</h2>
             <ul>
-                <li onclick="controller.showPanel('liveVideo')">1 Video</li>
-                <li onclick="controller.showPanel('fileVideo')">2 Video</li>
+                <li onclick="controller.showPanel('liveAudio')">Live Audio</li>
+                <li onclick="controller.showPanel('fileAudio')">Audio Upload (DONE)</li>
+                <li onclick="controller.showPanel('llmRetrieval')">LLM Retrieval</li>
             </ul>
         </div>
 
@@ -40,17 +41,24 @@
         <div class="content">
 
             <!-- Live Video -->
-            <div id="liveVideo" class="panel">
+            <div id="liveAudio" class="panel">
                 <h3>Live Video</h3>
                 <button onclick="controller.startLiveVideo()"> Start Live Video</button>
             </div>
 
             <!-- File Video -->
-             <div id="fileVideo" class="panel">
+             <div id="fileAudio" class="panel">
                 <h3>File Video</h3>
                 <input type="file" id="fileInput", accept="audio/">
                 <button onclick="controller.uploadAudioFile()">Upload Video File</button>      
              </div>
+
+            <!--LLM Engine -->
+             <div id="llmRetrieval" class="panel">
+                <h3>Unified Search Window Or Split Into 3+???</h3>
+             </div>
+
+
         </div>
     </div>
 <script src="app.js"></script>

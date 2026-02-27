@@ -3,13 +3,24 @@ from typing import List, Dict, Any
 from groq import Groq
 import tempfile
 from pydub import AudioSegment
+#from supabase import create_client
+
+GROQ_TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "Groq_token.txt" 
+#SUPABASE_URL_PATH = Path(__file__).parent.parent.parent / "tokens" / "Supabase_url.txt"
+#SUPABASE_TOKEN_PATH = Path(__file__).parent.parent.parent / "tokens" / "Supabase_token.txt"
 
 
-TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "Groq_token.txt"
-
-with open(TOKEN_PATH, "r") as f:
+with open(GROQ_TOKEN_PATH, "r") as f:
     api_key = f.read().strip()   
     groq_client = Groq(api_key=api_key)
+
+#with open(SUPABASE_URL_PATH, "r") as f1, open(SUPABASE_TOKEN_PATH, "r") as f2:
+#    supabase_url = f1.read().strip()
+#    supabase_token = f2.read().strip()
+#    supabase_client = create_client(supabase_url=supabase_url, supabase_token=supabase_token)
+
+
+
 
 
 def get_transcription(audio_path: str) -> Dict[str, Any]:
@@ -33,6 +44,37 @@ def get_transcription(audio_path: str) -> Dict[str, Any]:
         except Exception as e:
             raise RuntimeError(f"Groq Transcription Error: {str(e)}")
     return result
+
+
+
+def get_retrieval(query:str, system_prompt:str) -> str:
+
+    summary = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        temperature=0.3,
+        max_tokens=1024,
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": query
+            }
+        ]
+    )
+
+    retrieval = summary.choices[0].message.content
+
+    return retrieval
+
+
+
+
+
+
+
 
 def transcribe_original_audio(audio_path:str, diarization:List) -> List[Dict[str, Any]]:
 
