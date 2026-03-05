@@ -1,5 +1,7 @@
 from python_venv._transcribe import groq_client
 
+
+
 def get_generation(query:str, system_prompt:str) -> str:
     """
     Generates A LLM Response For Inputted Query Using Specified Prompt

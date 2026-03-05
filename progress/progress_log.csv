@@ -12,4 +12,5 @@ DATE,       WHO, TYPE,     AREA, SUMMARY
 2026-02-19, LD,  SETUP,    Supabase, Supabase Setup + Table Configuration  
 2026-02-19, LD,  UPDATED,  Supabase/N8N, Added Supabase INSERT Node To N8N Flow Moving Audio Data Into Permanent Table
 2026-02-26, LD,  CREATED,  Generation, Configured + Created The Internal Groq:Llama LMM Generation Method
-2026-03-05, LD,  CREATED,  Supabase/Retrieval, Created Retrieval Method Within Supabase To Extract Relevant Segments
+2026-03-04, LD,  CREATED,  Supabase/Retrieval, Created Retrieval Method Within Supabase To Extract Relevant Segments
+2026-03-05, LD,  STARTED,  Retrieval/Generation, Created Example System Prompts For The 3 Retrieval Requirements
