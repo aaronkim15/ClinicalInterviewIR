@@ -1,6 +1,6 @@
 # Project Setup (Windows)
 
-## Initial Requirements
+## Initial Requirements For Computer
 - Python
 - Pip
 - Docker Desktop
@@ -16,7 +16,7 @@ docker compose up -d
 ```
 
 ## Setup Python Virtual Environment + FastAPI
-Create, Activate, Install Dependancies For Environement, Then Host FastAPI Endpoints. Success Can Be Tested Using http://localhost:8000/status
+Create, Activate, Install Dependancies For Environement, Then Host FastAPI Endpoints. Success Can Be Tested Using http://localhost:8000/test-status
 ```bash
 cd src/python_venv
 python3 -m venv script_env
@@ -26,7 +26,7 @@ pip install -r python_env_dependancies.txt
 cd ..
 uvicorn python_venv.endpoints:app --host 0.0.0.0 --port 8000 --reload
 ```
-NOTE: Tokens Required tokens/HuggingFace_token.txt and tokens/Groq_token.txt
+NOTE: Tokens Required tokens/HuggingFace_token.txt and tokens/Groq_token.txt and Supabase_token.txt and Supabase_url.txt
 
 
 ## Setup Supabase

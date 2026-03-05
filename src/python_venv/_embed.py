@@ -4,6 +4,14 @@ from typing import List
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 def get_embeddings(texts:List[str]) -> List[List[float]]:
+    """
+    Encodes a list of strings into sentence embeddings
+
+    Arguments:
+        texts: A list of strings to be encoded
+
+    Returns: A list of embedding vectors corrasponding to each input string
+    """
     embeddings = embedding_model.encode(
         texts,
         convert_to_numpy=True,

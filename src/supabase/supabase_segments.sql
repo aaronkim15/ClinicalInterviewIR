@@ -7,3 +7,34 @@ create table public.segment (
   embedding public.vector null,
   constraint segment_pkey primary key (id)
 ) TABLESPACE pg_default;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION match_segments(
+  query_embedding  VECTOR(384),
+  speaker_filter   TEXT DEFAULT NULL,
+  match_count      INT DEFAULT 5
+)
+RETURNS TABLE (
+  id          BIGINT,
+  speaker     TEXT,
+  start       REAL,
+  "end"       REAL,
+  text        TEXT,
+  similarity  FLOAT
+)
+LANGUAGE sql AS $$
+  SELECT
+    id,
+    speaker,
+    start,
+    "end",
+    text,
+    1 - (embedding <=> query_embedding) AS similarity
+  FROM public.segment
+  WHERE (speaker_filter IS NULL OR speaker = speaker_filter)
+  ORDER BY embedding <=> query_embedding
+  LIMIT match_count;
+$$;
