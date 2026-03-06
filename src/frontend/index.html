@@ -33,7 +33,8 @@
             <ul>
                 <li onclick="controller.showPanel('liveAudio')">Live Audio</li>
                 <li onclick="controller.showPanel('fileAudio')">Audio Upload (DONE)</li>
-                <li onclick="controller.showPanel('llmRetrieval')">LLM Retrieval</li>
+                <li onclick="controller.showPanel('retrievalModules')">LLM Retrieval</li>
+                <li onclick="controller.showPanel('evaluationModules')">LLM Evaluation</li>
             </ul>
         </div>
 
@@ -54,8 +55,13 @@
              </div>
 
             <!--LLM Engine -->
-             <div id="llmRetrieval" class="panel">
+             <div id="retrievalModules" class="panel">
                 <h3>Unified Search Window Or Split Into 3+???</h3>
+             </div>
+
+            <!-- Evaluation -->
+             <div id="evaluationModules", class="panel">
+                <h3>Should This Have A Seperate Tab IE: For Seperate Tests, Or Should This Be Part Of Retrieval????</h3>
              </div>
 
 

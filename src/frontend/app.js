@@ -10,22 +10,20 @@ class Controller {
         if (panel) panel.classList.add('active');
     }
 
-    startLiveAudio() {
+    async startLiveAudio() {
     }
 
     async uploadAudioFile() {
         const file = this.fileInput.files[0];
-        alert('Selected File: ' + (file ? file.name : 'None'));
         if (!file) {
             alert('No Audio File Selected')
             return
         } else {
-
-            /* Caching Audio File*/
+            //Caching Audio File
             const formData = new FormData();
             formData.append('audio', file);
 
-            /* Initiating N8N Flow */
+            //Initiating N8N Flow
             try {
                 const response = await fetch("http://localhost:5678/webhook/upload-audio", {
                     method: "POST",
@@ -33,11 +31,27 @@ class Controller {
                 });
                 const data = await response.text();
                 alert('N8N Output: ' + JSON.stringify(data))
-
             } catch(error) {
                 alert('Error Uploading File: ' + error);
             }   
         }
+    }
+
+    async retrievalModule_1(){
+
+    }
+
+    async retrievalModule_2(){
+
+    }
+
+    async retrievalModule_3(){
+
+    }
+
+
+    async evaluationModules(){
+
     }
 }
 
