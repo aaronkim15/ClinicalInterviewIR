@@ -2,6 +2,8 @@ class Controller {
     constructor() {
         this.panels = document.querySelectorAll('.panel');
         this.fileInput = document.getElementById('fileInput');
+        this.patientStream = null;
+        this.clinicianStream = null;
     }
 
     showPanel(id) {
@@ -10,7 +12,56 @@ class Controller {
         if (panel) panel.classList.add('active');
     }
 
+    async assignAudioDevice(role){
+        const existingLabel = document.getElementById(role === 'patient' ? 'patientAudio' : 'clinicianAudio');
+        const assignButton = event.target
+
+        try{
+            //Stop Existing Stream
+            if(role === 'patient' && this.patientStream){
+                this.patientStream.getTracks().forEach(t => t.stop());
+            } else if (role == 'clinician' && this.clinicianStream) {
+                this.clinicianStream.getTracks().forEach(t => t.stop());
+            }
+
+            //Popup For Access
+            const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+            const track = stream.getAudioTracks()[0];
+            const name = track.label
+
+            if(role === 'patient'){
+                this.patientStream = stream;
+            } else {
+                this.clinicianStream = stream;
+            }
+
+            existingLabel.textContent = name;
+            assignButton.classList.add('assigned');
+
+        } catch (error) {
+            alert(`Failed: ${error.message}`)
+        }
+    }
+
     async startLiveAudio() {
+        const existingStatus = document.getElementById('streamStatus')
+        
+        if (!this.patientStream || !this.clinicianStream){
+            alert('Please Assign Both Roles Audio')
+        } else if (document.getElementById('patientAudio').textContent ===
+                   document.getElementById('clinicianAudio').textContent) {
+            alert('Audio Sources Identical: Please Choose Seperate Sources')
+        } else {
+
+            //LIVEKIT CONNECTING
+            document.getElementById('streamStatus').textContent = 'Running'
+        }
+    }
+
+    async stopLiveAudio(){
+
+        //LIVEKIT STOPPING
+        document.getElementById('streamStatus').textContent = 'Not Running';
     }
 
     async uploadAudioFile() {

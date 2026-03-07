@@ -44,7 +44,22 @@
             <!-- Live Video -->
             <div id="liveAudio" class="panel">
                 <h3>Live Video</h3>
-                <button onclick="controller.startLiveVideo()"> Start Live Video</button>
+                <h4>To Utilize This Functionality Please Connect 2+ Audio Inputs, Please Ensure You Allow Audio Access To This Website</h4>
+                <div class="device-row">
+                    <label style="display: inline-block; width: 180px;">Patient Microphone</label>&nbsp;&nbsp;
+                    <span class="device-name", id="patientAudio" style="display: inline-block; width: 250px;">N/A</span>&nbsp;&nbsp;
+                    <button class="assign-btn", onclick="controller.assignAudioDevice('patient')">Select</button>"
+                </div>
+                <div class="device-row">
+                    <label style="display: inline-block; width: 180px;">Clinician Microphone</label>&nbsp;&nbsp;
+                    <span class="device-name", id="clinicianAudio" style="display: inline-block; width: 250px;">N/A</span>&nbsp;&nbsp;
+                    <button class="assign-btn", onclick="controller.assignAudioDevice('clinician')">Select</button>"
+                </div>
+                <div class="audio-status">
+                    Live Streaming Status: <span id="streamStatus">Not Running</span>
+                </div>
+                <button onclick="controller.startLiveAudio()">Start Live Audio</button>
+                <button onclick="controller.stopLiveAudio()">Stop Live Audio</button>
             </div>
 
             <!-- File Video -->
