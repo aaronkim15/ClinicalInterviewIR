@@ -6,6 +6,14 @@
 - Docker Desktop
 - ffmpeg
 
+## Environment Variable Fields
+-GROQ_API_KEY
+-HUGGINGFACE_TOKEN
+-SUPABASE_URL
+-SUPABASE_KEY
+-LIVEKIT_API_KEY
+-LIVEKIT_API_SECRET
+
 
 ## Setup Docker Image
 Create And Then Activate Docker Image
@@ -26,8 +34,6 @@ pip install -r python_env_dependancies.txt
 cd ..
 uvicorn python_venv.endpoints:app --host 0.0.0.0 --port 8000 --reload
 ```
-NOTE: Tokens Required tokens/HuggingFace_token.txt and tokens/Groq_token.txt and Supabase_token.txt and Supabase_url.txt
-
 
 ## Setup Supabase
 Within Supabase SQL Editor, Run The Following:
