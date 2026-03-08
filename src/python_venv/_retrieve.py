@@ -1,14 +1,12 @@
 from pathlib import Path
 from typing import List, Dict, Any
 from supabase import create_client
+import os 
+from dotenv import load_dotenv
 
-SUPABASE_URL_PATH = Path(__file__).parent.parent.parent / "tokens" / "Supabase_url.txt"
-SUPABASE_TOKEN_PATH = Path(__file__).parent.parent.parent / "tokens" / "Supabase_token.txt"
+load_dotenv()
 
-with open(SUPABASE_URL_PATH, "r") as f1, open(SUPABASE_TOKEN_PATH, "r") as f2:
-    supabase_url = f1.read().strip()
-    supabase_key = f2.read().strip()
-    supabase_client = create_client(supabase_url=supabase_url, supabase_key=supabase_key)
+supabase_client = create_client(supabase_url=os.getenv("SUPABASE_URL"), supabase_key=os.getenv("SUPABASE_KEY"))
 
 def get_retrieval(query_vector:list[float], speaker: str = None, segment_count:int = 5) -> List[dict[str, Any]]:
     """

@@ -7,5 +7,16 @@ services:
       - n8n_data:/home/node/.n8n
     restart: unless-stopped
 
+  livekit:
+    image: livekit/livekit-server:latest
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "50100-50200:50100-50200/udp"
+    environment:
+      - LIVEKIT_KEYS=${LIVEKIT_API_KEY}:${LIVEKIT_API_SECRET}
+    command: --dev
+    restart: unless-stopped
+
 volumes:
   n8n_data:

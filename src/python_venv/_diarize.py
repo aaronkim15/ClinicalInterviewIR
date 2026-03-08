@@ -1,16 +1,13 @@
 from pathlib import Path
 import torch
+import os
 from pyannote.audio import Pipeline
 from pyannote.core import Annotation
 from typing import Dict, Any
 import soundfile as sf
 
 
-TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "HuggingFace_token.txt"
-
-with open(TOKEN_PATH, "r") as f:
-    token = f.read().strip()
-    huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=token)
+huggingface_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=os.getenv("HUGGINGFACE_TOKEN"))
 
 
 def get_diarization(audio_path: str) -> Annotation:

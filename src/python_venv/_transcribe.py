@@ -5,12 +5,12 @@ import tempfile
 from pydub import AudioSegment
 from groq.types.audio import Transcription
 from pyannote.core import Annotation
+import os
+from dotenv import load_dotenv
 
-GROQ_TOKEN_PATH  =Path(__file__).parent.parent.parent / "tokens" / "Groq_token.txt" 
+load_dotenv()
 
-with open(GROQ_TOKEN_PATH, "r") as f:
-    api_key = f.read().strip()   
-    groq_client = Groq(api_key=api_key)
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def get_transcription(audio_path: str) -> Transcription:
     """
@@ -29,7 +29,6 @@ def get_transcription(audio_path: str) -> Transcription:
         )
         return result
         
-
 def transcribe_original_audio(audio_path:str, diarization:Annotation) -> List[Dict[str, Any]]:
     """
     Transcribes an audio file into chunks corrasponding to supplies diarization
@@ -60,10 +59,6 @@ def transcribe_original_audio(audio_path:str, diarization:Annotation) -> List[Di
 
         #TODO: Delete Temp File?
     return ret
-
-
-
-
 
 
 

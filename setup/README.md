@@ -12,7 +12,7 @@ Create And Then Activate Docker Image
 ```bash
 cd src/docker
 docker build -t n8n_image:latest .
-docker compose up -d
+docker compose --env-file ../../.env up -d
 ```
 
 ## Setup Python Virtual Environment + FastAPI
