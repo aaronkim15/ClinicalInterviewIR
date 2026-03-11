@@ -76,6 +76,7 @@ class Controller {
 
             //Initiating N8N Flow
             try {
+                alert("Starting Flow");
                 const response = await fetch("http://localhost:5678/webhook/upload-audio", {
                     method: "POST",
                     body: formData

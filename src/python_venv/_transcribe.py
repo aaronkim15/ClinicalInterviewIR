@@ -28,7 +28,7 @@ def get_transcription(audio_path: str) -> Transcription:
             response_format="verbose_json"
         )
         return result
-        
+     
 def transcribe_original_audio(audio_path:str, diarization:Annotation) -> List[Dict[str, Any]]:
     """
     Transcribes an audio file into chunks corrasponding to supplies diarization
@@ -57,9 +57,8 @@ def transcribe_original_audio(audio_path:str, diarization:Annotation) -> List[Di
             "text": transcription.text
         })
 
-        #TODO: Delete Temp File?
+        os.remove(segment_path)
     return ret
-
 
 
 #TODO: Test, As LiveKit hasnt been yet made

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 import tempfile
 import json
+import os
 
 #FastAPI App Initialization
 app = FastAPI(title="Pyannote Diarization")
@@ -61,7 +62,7 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[s
 
         ret = _transcribe.transcribe_original_audio(audio_path=audio_path, diarization=diarization)
 
-        #TODO: Delete Temp?
+        os.remove(audio_path)
 
         return [{"transcription": ret}]
         
@@ -93,7 +94,6 @@ def index_text(metadata: str) -> List[Dict[str, Any]]:
 
 
 #OLD/IN PROGRESS
-
 
 #NOTE: Not Tested, As LiveKit Not Setup And This Is Based On Expected LiveKit Outputs, Subject To Change
 #@app.post("/transcribe-seperated-audio")

@@ -1,7 +1,13 @@
 from sentence_transformers import SentenceTransformer
 from typing import List
 
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+"""
+Possible Models To Use:
+- 'all-MiniLM-L6-v2'
+- 'medicalai/ClinicalBERT'
+"""
+
+embedding_model = SentenceTransformer('medicalai/ClinicalBERT')
 
 def get_embeddings(texts:List[str]) -> List[List[float]]:
     """
