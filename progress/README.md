@@ -12,7 +12,7 @@ As This Project Includes Many Different Pieces, Coordination Will Be Key. To Pre
 ## Planned Next Steps:
 Any notes about planned next contribution, work in progress or personal TODO List.
 
-- Lucas: Adding Speaker Identification Within File Upload (Speaker_00, Speaker_01) -> (patient, clinician)
+- Lucas: Adding Speaker Identification Within File Upload Flow (Speaker_00, Speaker_01) -> (patient, clinician)
 
 
 
