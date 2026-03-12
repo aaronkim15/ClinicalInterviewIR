@@ -28,3 +28,10 @@ def get_generation(query:str, system_prompt:str) -> str:
         ]
     )
     return summary.choices[0].message.content
+
+
+
+
+
+
+

@@ -92,6 +92,59 @@ def index_text(metadata: str) -> List[Dict[str, Any]]:
         return [{"status": "error", "text": f"Error In Index Audio: {str(e)}"}]
 
 
+@app.post("/generate-summary")
+def generate_summary(interview:int = None, speaker:str = None) -> str:
+    try:
+        query_vector = _embed.get_embeddings(["Medical"])[0]
+    
+        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
+
+        segments_str = json.dumps(segments)
+
+        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "SUMMARIZATION.txt").read_text()
+
+        return _generate.get_generation(query=f"Please Summarize: {segments_str}", system_prompt=system_prompt)
+
+    except Exception as e:
+            return [{"status": "error", "text": f"Error In Generate Summary: {str(e)}"}]
+
+
+@app.post("/generate-analysis")
+def generate_analysis(interview:int = None, speaker:str = None) -> str:
+    try:
+        query_vector = _embed.get_embeddings(["Medical"])[0]
+    
+        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
+
+        segments_str = json.dumps(segments)
+
+        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "ANALYZER.txt").read_text()
+
+        return _generate.get_generation(query=f"Please Analyze: {segments_str}", system_prompt=system_prompt)
+
+    except Exception as e:
+            return [{"status": "error", "text": f"Error In Generate Analysis: {str(e)}"}]
+
+@app.post("/generate-answer")
+def generate_answer(query:str, interview:int = None, speaker:str = None) -> str:
+    
+    try:
+        query_vector = _embed.get_embeddings([query])[0]
+    
+        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
+
+        segments_str = json.dumps(segments)
+
+        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "QUESTIONS.txt").read_text()
+
+        return _generate.get_generation(query=f"Please Answer: {query} Using Details From: {segments_str}", system_prompt=system_prompt)
+
+    except Exception as e:
+            return [{"status": "error", "text": f"Error In Generate Answer: {str(e)}"}]
+
+
+
+
 
 #OLD/IN PROGRESS
 
