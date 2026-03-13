@@ -4,3 +4,5 @@
 !/tokens/.gitkeep
 !/tests/.gitkeep
 /.env
+/*.env
+/.env.*
