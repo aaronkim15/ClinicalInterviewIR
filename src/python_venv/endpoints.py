@@ -7,7 +7,7 @@ import json
 import os
 
 #FastAPI App Initialization
-app = FastAPI(title="Pyannote Diarization")
+app = FastAPI(title="Core Python Code")
 
 #NOTES:
 #- Files Named "_{name}" As Considered Internal, As Such Error Handling Needs To Be Done In This Outer Layer
@@ -38,8 +38,6 @@ def test_status() -> Dict[str, str]:
 
 
 
-
-
 #LIVE ENDPOINTS IN PIPELINE:
 @app.post("/transcribe-original-audio")
 def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[str, Any]]:
@@ -60,11 +58,13 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[s
 
         diarization = _diarize.get_diarization(audio_path=audio_path)
 
-        ret = _transcribe.transcribe_original_audio(audio_path=audio_path, diarization=diarization)
+        segments = _transcribe.transcribe_original_audio(audio_path=audio_path, diarization=diarization)
 
         os.remove(audio_path)
 
-        return [{"transcription": ret}]
+        segments = _generate.get_generated_roles(segments=segments)
+
+        return [{"transcription": segments}]
         
     except Exception as e:
         return [{"status": "error", "text": f"Error In Transcribe Original Audio: {str(e)}"}]

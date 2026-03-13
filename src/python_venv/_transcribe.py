@@ -61,6 +61,13 @@ def transcribe_original_audio(audio_path:str, diarization:Annotation) -> List[Di
     return ret
 
 
+
+
+
+
+
+
+
 #TODO: Test, As LiveKit hasnt been yet made
 def transcribe_seperated_audio(audio_paths:List[str], metadata:Any) -> Any:
 
