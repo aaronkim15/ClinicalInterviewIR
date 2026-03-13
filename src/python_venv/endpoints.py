@@ -7,7 +7,7 @@ import json
 import os
 
 #FastAPI App Initialization
-app = FastAPI(title="Pyannote Diarization")
+app = FastAPI(title="Core Python Code")
 
 #NOTES:
 #- Files Named "_{name}" As Considered Internal, As Such Error Handling Needs To Be Done In This Outer Layer
@@ -38,8 +38,6 @@ def test_status() -> Dict[str, str]:
 
 
 
-
-
 #LIVE ENDPOINTS IN PIPELINE:
 @app.post("/transcribe-original-audio")
 def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[str, Any]]:
@@ -60,15 +58,23 @@ def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[s
 
         diarization = _diarize.get_diarization(audio_path=audio_path)
 
-        ret = _transcribe.transcribe_original_audio(audio_path=audio_path, diarization=diarization)
+        segments = _transcribe.transcribe_original_audio(audio_path=audio_path, diarization=diarization)
 
         os.remove(audio_path)
 
-        return [{"transcription": ret}]
+        segments = _generate.get_generated_roles(segments=segments)
+
+        return [{"transcription": segments}]
         
     except Exception as e:
         return [{"status": "error", "text": f"Error In Transcribe Original Audio: {str(e)}"}]
 
+@app.post("/transcribe-seperated-audio")
+def transcribe_seperated_audio():
+    #TODO: When Outputs From Livekit Are Known
+    pass
+
+#NOTE: This is actually embedding for now all indexing is done by supabase automatically
 @app.post("/index-text")
 def index_text(metadata: str) -> List[Dict[str, Any]]:
     """
@@ -92,55 +98,44 @@ def index_text(metadata: str) -> List[Dict[str, Any]]:
         return [{"status": "error", "text": f"Error In Index Audio: {str(e)}"}]
 
 
-@app.post("/generate-summary")
-def generate_summary(interview:int = None, speaker:str = None) -> str:
-    try:
-        query_vector = _embed.get_embeddings(["Medical"])[0]
+
+
+
+def get_generated_responses(system_prompt_name: str, query:str = None, speaker:str = None, segment_count:int = 50):
     
-        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
+    query_vector = _embed.get_embeddings(["Medical"])[0]
+    
+    segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=segment_count)
 
-        segments_str = json.dumps(segments)
+    segments_str = json.dumps(segments)
 
-        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "SUMMARIZATION.txt").read_text()
+    system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / system_prompt_name).read_text()
 
-        return _generate.get_generation(query=f"Please Summarize: {segments_str}", system_prompt=system_prompt)
+    return _generate.get_generation(query=f"{query}: {segments_str}", system_prompt=system_prompt)
 
+
+@app.post("/generate-summary")
+def generate_summary(speaker:str = None, segment_count:int = 20) -> str:
+    try:
+        return get_generated_responses(system_prompt_name="SUMMARIZATION.txt", query=None, speaker=speaker, segment_count=segment_count)
     except Exception as e:
             return [{"status": "error", "text": f"Error In Generate Summary: {str(e)}"}]
 
-
 @app.post("/generate-analysis")
-def generate_analysis(interview:int = None, speaker:str = None) -> str:
+def generate_analysis(speaker:str = None, segment_count:int = 20) -> str:
     try:
-        query_vector = _embed.get_embeddings(["Medical"])[0]
-    
-        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
-
-        segments_str = json.dumps(segments)
-
-        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "ANALYZER.txt").read_text()
-
-        return _generate.get_generation(query=f"Please Analyze: {segments_str}", system_prompt=system_prompt)
-
+        return get_generated_responses(system_prompt_name="ANALYZER.txt", query=None, speaker=speaker, segment_count=segment_count)
     except Exception as e:
             return [{"status": "error", "text": f"Error In Generate Analysis: {str(e)}"}]
 
 @app.post("/generate-answer")
-def generate_answer(query:str, interview:int = None, speaker:str = None) -> str:
-    
+def generate_answer(query:str, speaker:str = None, segment_count:int = 20) -> str:
     try:
-        query_vector = _embed.get_embeddings([query])[0]
-    
-        segments = _retrieve.get_retrieval(query_vector=query_vector, speaker=speaker, segment_count=100)
-
-        segments_str = json.dumps(segments)
-
-        system_prompt = (Path(__file__).resolve().parents[2] / "prompts" / "QUESTIONS.txt").read_text()
-
-        return _generate.get_generation(query=f"Please Answer: {query} Using Details From: {segments_str}", system_prompt=system_prompt)
-
+        return get_generated_responses(system_prompt_name="QUESTIONS.txt", query=query, speaker=speaker, segment_count=segment_count)
     except Exception as e:
             return [{"status": "error", "text": f"Error In Generate Answer: {str(e)}"}]
+
+
 
 
 
@@ -150,6 +145,7 @@ def generate_answer(query:str, interview:int = None, speaker:str = None) -> str:
 
 #NOTE: Not Tested, As LiveKit Not Setup And This Is Based On Expected LiveKit Outputs, Subject To Change
 #@app.post("/transcribe-seperated-audio")
+"""
 def transcribe_separated_audio(audio_files: List[UploadFile] = File(...), metadata: str = Form(...)) -> dict:
     try:
         audio_paths = []
@@ -168,14 +164,4 @@ def transcribe_separated_audio(audio_files: List[UploadFile] = File(...), metada
     
     except Exception as e:
         raise RuntimeError(f"Error In Transcribe Separated Audio: {str(e)}")
-    
-#NOTE: Not In Use, For Efficiency Reasons Moved Into Transcribe
-#@app.post("/diarize-original-audio")
-async def diarize_original_audio(audio: UploadFile = File(...)):
-    try:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmp.write(await audio.read())
-            audio_path = str(Path(tmp.name))
-        return [{"diarization": _diarize.get_diarization(audio_path=audio_path)}]
-    except Exception as e:
-        raise RuntimeError(f"Error In Diarized Original Audio: {str(e)}")
+"""
