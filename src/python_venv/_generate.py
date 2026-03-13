@@ -1,6 +1,7 @@
 from python_venv._transcribe import groq_client
 from typing import List, Dict, Any
 from pathlib import Path
+import json
 
 
 def get_generation(query:str, system_prompt:str) -> str:
@@ -50,6 +51,7 @@ def get_generated_roles(segments: List[Dict[str, Any]]) -> List[Dict[str,Any]]:
             segment['speaker'] = "PATIENT"
 
     return segments
+
 
 
 
