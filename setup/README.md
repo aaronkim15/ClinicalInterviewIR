@@ -62,3 +62,29 @@ start index.html
 ```
 
 NOTE: The File Upload Pipeline Is Complete From Front End To Supabase, Feel Tree To Test It With A Moderately Sized .WAV File. Everything Does Work, SO LONG As Your Credentials And Tokens Are Setup Properly. Reading The Python Error Messages And N8N Error Messages Will Help If You Experience Anything Weird
+
+
+## LiveKit 
+
+### Python Version Warning
+Use Python 3.11 or Python 3.10
+
+Do NOT use Python 3.13, as some audio dependencies in this project are not compatible with it.
+
+### Setup
+LiveKit runs through Docker as part of the docker-compose setup.
+
+### Confirm Docker is Running
+Before starting LiveKit, make sure Docker Desktop is open and fully running
+
+### Start LiveKit
+```bash
+cd src/docker
+docker compose --env-file ../../env up -d livekit
+```
+
+### Verify Livekit is running and the Port Connection
+docker compose ps
+docker compose logs --tail=50 livekit
+
+nc -zv localhost 7880
