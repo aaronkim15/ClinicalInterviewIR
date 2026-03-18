@@ -1,10 +1,18 @@
-from python_venv import _diarize, _embed, _generate, _retrieve, _transcribe
+# from python_venv import _diarize, _embed, _generate, _retrieve, _transcribe
 from fastapi import FastAPI, UploadFile, File, Form, Body
 from pathlib import Path
 from typing import List, Dict, Any
 import tempfile
 import json
 import os
+from livekit import api
+from pydantic import BaseModel
+
+# 
+class LiveKitTokenRequest(BaseModel):
+    room_name: str
+    participant_identidy: str
+    participant_name: str | None = None
 
 #FastAPI App Initialization
 app = FastAPI(title="Core Python Code")
@@ -38,7 +46,35 @@ def test_status() -> Dict[str, str]:
 
 
 
+
 #LIVE ENDPOINTS IN PIPELINE:
+@app.post("/livekit-token")
+def create_livekit_token(payload: LiveKitTokenRequest) -> dict:
+    try:
+        token= (
+            api.AccessToken()
+            .with_identity(payload.participant_identidy)
+            .with_name(payload.participant_name or payload.participant_identidy)
+            .with_grants(
+                api.VideoGrants(
+                    room_join=True,
+                    room=payload.room_name,
+                    can_publish=True,
+                    can_subscribe=True,
+                )
+            )
+            .to_jwt()
+        )
+        return{
+            "server_url": "ws://localhost:7880",
+            "participant_token": token,
+        }
+    except Exception as e:
+        return{
+            "status": "error",
+            "text": f"Error creating LiveKit token: {str(e)}"
+        }
+
 @app.post("/transcribe-original-audio")
 def transcribe_original_audio(audio_file: UploadFile = File(...)) -> List[Dict[str, Any]]:
     """

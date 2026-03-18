@@ -1,9 +1,12 @@
+
+
 class Controller {
     constructor() {
         this.panels = document.querySelectorAll('.panel');
         this.fileInput = document.getElementById('fileInput');
         this.patientStream = null;
         this.clinicianStream = null;
+        this.room = null;
     }
 
     showPanel(id) {
@@ -52,15 +55,20 @@ class Controller {
                    document.getElementById('clinicianAudio').textContent) {
             alert('Audio Sources Identical: Please Choose Seperate Sources')
         } else {
-
             //LIVEKIT CONNECTING
-            document.getElementById('streamStatus').textContent = 'Running'
+            this.room = connectedRoom;
+            document.getElementById('streamStatus').textContent = 'Running';
         }
     }
 
     async stopLiveAudio(){
 
         //LIVEKIT STOPPING
+
+        if(this.room){
+            this.room.disconnect();
+            this.room = null;
+        }
         document.getElementById('streamStatus').textContent = 'Not Running';
     }
 
