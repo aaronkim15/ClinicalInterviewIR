@@ -1,5 +1,6 @@
 # from python_venv import _diarize, _embed, _generate, _retrieve, _transcribe
 from fastapi import FastAPI, UploadFile, File, Form, Body
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from typing import List, Dict, Any
 import tempfile
@@ -7,15 +8,25 @@ import json
 import os
 from livekit import api
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
-# 
+load_dotenv()
+ENV_PATH = Path(__file__).resolve().parents[1] / "docker" / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
 class LiveKitTokenRequest(BaseModel):
     room_name: str
-    participant_identidy: str
+    participant_identity: str
     participant_name: str | None = None
 
 #FastAPI App Initialization
 app = FastAPI(title="Core Python Code")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #NOTES:
 #- Files Named "_{name}" As Considered Internal, As Such Error Handling Needs To Be Done In This Outer Layer
@@ -51,10 +62,19 @@ def test_status() -> Dict[str, str]:
 @app.post("/livekit-token")
 def create_livekit_token(payload: LiveKitTokenRequest) -> dict:
     try:
+        api_key = os.getenv("LIVEKIT_API_KEY")
+        api_secret = os.getenv("LIVEKIT_API_SECRET")
+
+        print("LIVEKIT_API_KEY:", api_key)
+        print("LIVEKIT_API_SECRET exists:", api_secret is not None)
+
+        if not api_key or not api_secret:
+            raise ValueError("api_key and api_secret must be set")
+        
         token= (
             api.AccessToken()
-            .with_identity(payload.participant_identidy)
-            .with_name(payload.participant_name or payload.participant_identidy)
+            .with_identity(payload.participant_identity)
+            .with_name(payload.participant_name or payload.participant_identity)
             .with_grants(
                 api.VideoGrants(
                     room_join=True,

@@ -48,12 +48,12 @@
                 <div class="device-row">
                     <label style="display: inline-block; width: 180px;">Patient Microphone</label>&nbsp;&nbsp;
                     <span class="device-name", id="patientAudio" style="display: inline-block; width: 250px;">N/A</span>&nbsp;&nbsp;
-                    <button class="assign-btn", onclick="controller.assignAudioDevice('patient')">Select</button>"
+                    <button class="assign-btn", onclick="controller.assignAudioDevice('patient',event)">Select</button>
                 </div>
                 <div class="device-row">
                     <label style="display: inline-block; width: 180px;">Clinician Microphone</label>&nbsp;&nbsp;
                     <span class="device-name", id="clinicianAudio" style="display: inline-block; width: 250px;">N/A</span>&nbsp;&nbsp;
-                    <button class="assign-btn", onclick="controller.assignAudioDevice('clinician')">Select</button>"
+                    <button class="assign-btn", onclick="controller.assignAudioDevice('clinician', event)">Select</button>
                 </div>
                 <div class="audio-status">
                     Live Streaming Status: <span id="streamStatus">Not Running</span>
@@ -65,7 +65,7 @@
             <!-- File Video -->
              <div id="fileAudio" class="panel">
                 <h3>File Video</h3>
-                <input type="file" id="fileInput", accept="audio/">
+                <input type="file" id="fileInput", accept="audio/*">
                 <button onclick="controller.uploadAudioFile()">Upload Video File</button>      
              </div>
 
@@ -75,13 +75,14 @@
              </div>
 
             <!-- Evaluation -->
-             <div id="evaluationModules", class="panel">
+             <div id="evaluationModules" class="panel">
                 <h3>Should This Have A Seperate Tab IE: For Seperate Tests, Or Should This Be Part Of Retrieval????</h3>
              </div>
 
 
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
